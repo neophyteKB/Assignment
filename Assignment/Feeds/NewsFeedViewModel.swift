@@ -11,6 +11,7 @@ import Combine
 final class NewsFeedViewModel: ObservableObject {
     @Published var articles: [Article] = []
     @Published var bookmarks: [Bookmark] = []
+    @Published var showLoader: Bool = false
     @Published var selectedCategory: NewsCategory = .none
     @Published var hasError: Bool = false
     var error: Error? = nil
@@ -18,8 +19,9 @@ final class NewsFeedViewModel: ObservableObject {
     private let apiManager: NetworkManager
 
     init(apiManager: NetworkManager = NetworkManager()) {
+        self.showLoader = true
         self.apiManager = apiManager
-        fetchArticles()
+        self.fetchArticles()
     }
 
     func fetchArticles() {
@@ -31,6 +33,7 @@ final class NewsFeedViewModel: ObservableObject {
                 hasError = true
                 self.error = error
             }
+            self.showLoader = false
         }
     }
 
