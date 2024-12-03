@@ -15,16 +15,23 @@ struct NewsFeedView: View {
         NavigationView {
             feedsView
                 .navigationTitle("News Reader")
-                .task {
-                    viewModel.fetchArticles()
-                }
+        }
+        .showLoader($viewModel.showLoader)
+        .task {
+            viewModel.fetchArticles()
         }
     }
     
     private var feedsView: some View {
         List(viewModel.articles, id: \.articleId) { article in
-            Text(article.title)
+            FeedCardView(
+                icon: article.sourceIcon,
+                title: article.title,
+                description: article.description,
+                sourceUrl: article.sourceUrl
+            )
         }
+        .listStyle(.plain)
     }
 }
 
