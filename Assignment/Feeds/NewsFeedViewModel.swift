@@ -8,11 +8,12 @@
 import Combine
 
 @MainActor
-class NewsFeedViewModel: ObservableObject {
+final class NewsFeedViewModel: ObservableObject {
     @Published var articles: [Article] = []
-    @Published var filteredArticles: [Article] = []
-    @Published var bookmarks: [Article] = []
-    @Published var selectedCategory: String = "All"
+    @Published var bookmarks: [Bookmark] = []
+    @Published var selectedCategory: NewsCategory = .none
+    @Published var hasError: Bool = false
+    var error: Error? = nil
 
     private let apiManager: NetworkManager
 
@@ -23,22 +24,22 @@ class NewsFeedViewModel: ObservableObject {
 
     func fetchArticles() {
         Task {
-            self.articles = await apiManager.fetchArticles()
-            self.filterArticles()
+            do {
+                let articles = try await apiManager.fetchArticles()
+                self.articles = articles
+            } catch {
+                hasError = true
+                self.error = error
+            }
         }
-    }
-
-    func filterArticles() {
-        filteredArticles = selectedCategory == "All"
-            ? articles
-            : articles.filter { $0.category == selectedCategory }
     }
 
     func toggleBookmark(article: Article) {
-        if let index = bookmarks.firstIndex(where: { $0.id == article.id }) {
-            bookmarks.remove(at: index)
-        } else {
-            bookmarks.append(article)
-        }
+        // TODO: - Add logic to set bookmark
+//        if let index = bookmarks.firstIndex(where: { $0.id == article.id }) {
+//            bookmarks.remove(at: index)
+//        } else {
+//            bookmarks.append(article)
+//        }
     }
 }

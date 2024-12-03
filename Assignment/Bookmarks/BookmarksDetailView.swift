@@ -19,5 +19,6 @@ struct ArticleDetailView: View {
 }
 
 #Preview {
-    ArticleDetailView(article: .init(id: .init(), title: "Title", summary: "Summary", content: "Content", category: "Category"))
+    guard let feed = JsonParser.feeds.first else { return EmptyView() }
+    return ArticleDetailView(article: feed)
 }

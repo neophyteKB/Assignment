@@ -10,17 +10,15 @@ import SwiftData
 
 @Model
 final class Bookmark {
-    var id: UUID
+    var id: String
     var title: String
-    var summary: String
+    var desc: String
     var content: String
-    var category: String
     
     init(article: Article) {
-        self.id = article.id
+        self.id = article.articleId
         self.title = article.title
-        self.summary = article.summary
+        self.desc = article.description ?? ""
         self.content = article.content
-        self.category = article.category
     }
 }
