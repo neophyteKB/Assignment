@@ -9,35 +9,25 @@ import SwiftUI
 
 struct NewsFeedView: View {
     
-    @StateObject var viewModel = NewsFeedViewModel()
+    @StateObject private var viewModel = NewsFeedViewModel()
     
     var body: some View {
         NavigationView {
-            VStack {
-                Picker("Category", selection: $viewModel.selectedCategory) {
-                    Text("All").tag("All")
-                    Text("Technology").tag("Technology")
-                    Text("Sports").tag("Sports")
+            feedsView
+                .navigationTitle("News Reader")
+                .task {
+                    viewModel.fetchArticles()
                 }
-                .pickerStyle(SegmentedPickerStyle())
-                .onChange(of: viewModel.selectedCategory) { _, _ in
-                    viewModel.filterArticles()
-                }
-                
-                List(viewModel.filteredArticles) { article in
-                    // Navigate to next details screen
-//                    NavigationLink(destination: ArticleDetailView(article: article)) {
-//                        Text(article.title)
-//                    }
-                }
-            }
-            .navigationTitle("News Reader")
-            .toolbar {
-                NavigationLink("Bookmarks") {
-                    // Navigate to bookbark screen
-//                    BookmarksView(viewModel: viewModel)
-                }
-            }
         }
     }
+    
+    private var feedsView: some View {
+        List(viewModel.articles, id: \.articleId) { article in
+            Text(article.title)
+        }
+    }
+}
+
+#Preview {
+    NewsFeedView()
 }
