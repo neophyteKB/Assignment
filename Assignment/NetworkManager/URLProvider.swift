@@ -9,7 +9,7 @@ import Foundation
 public struct URLProvider {
     private let baseURL: String = "https://newsdata.io/api/1/news"
     
-    func generateURL(category: NewsCategory = .none, search: String = "") throws -> URL {
+    func generateURL(category: NewsCategory = .none, search: String? = nil) throws -> URL {
         var components = URLComponents(string: baseURL)
         
         var queryItems: [URLQueryItem] = [
@@ -21,8 +21,8 @@ public struct URLProvider {
             queryItems.append(URLQueryItem(name: "category", value: category.query))
         }
         
-        if !search.isEmpty {
-            queryItems.append(URLQueryItem(name: "search", value: search))
+        if let search, !search.isEmpty {
+            queryItems.append(URLQueryItem(name: "q", value: search))
         }
         
         components?.queryItems = queryItems
