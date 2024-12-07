@@ -5,7 +5,7 @@
 //  Created by Kamal Kishor on 02/12/24.
 //
 
-import Combine
+import Foundation
 
 @MainActor
 final class NewsFeedViewModel: ObservableObject, Sendable {
