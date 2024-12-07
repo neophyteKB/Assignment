@@ -39,7 +39,9 @@ final class DatabaseManager {
             context.insert(bookmark)
             try context.save()
         } catch {
+#if DEBUG
             print("Error saving bookmark: \(error)")
+#endif
         }
     }
 
@@ -53,7 +55,9 @@ final class DatabaseManager {
                 try context.save()
             }
         } catch {
+#if DEBUG
             print("Error removing bookmark: \(error)")
+#endif
         }
     }
 
@@ -62,7 +66,9 @@ final class DatabaseManager {
             let bookmarks = try context.fetch( FetchDescriptor<Bookmark>())
             return bookmarks
         } catch {
+#if DEBUG
             print("Error fetching bookmarks: \(error)")
+#endif
             return []
         }
     }

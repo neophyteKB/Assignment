@@ -16,7 +16,7 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
     @Published var hasError: Bool = false
     @Published var bookmarkCount: Int = 0
     @Published var categoryFilter: [NewsCategory] = []
-    var error: Error? = nil
+    var error: String = ""
 
     private let apiManager: NetworkManager
     private var bookmarkIds: [String] = .init()
@@ -39,13 +39,14 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
                 self.articles = articles
             } catch {
                 hasError = true
-                self.error = error
+                self.error = error.localizedDescription
             }
             self.showLoader = false
         }
     }
     private func setupObservers() {
         $searchText
+            .dropFirst()
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
             .sink { [weak self] _ in
                 self?.fetchArticles()
@@ -53,6 +54,7 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
             .store(in: &cancellables)
         
         $categoryFilter
+            .dropFirst()
             .sink { [weak self] _ in
                 self?.fetchArticles()
             }

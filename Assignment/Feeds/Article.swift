@@ -28,3 +28,23 @@ struct Article: Decodable, Sendable {
     let sourceIcon: String?
     let language: String
 }
+
+extension String {
+    func dateString(for timezone: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone(identifier: timezone)
+        if let date = formatter.date(from: self) {
+            formatter.dateFormat = "dd MMM yyyy"
+            return formatter.string(from: date)
+        }
+        else {
+            if let dateString = self.components(separatedBy: " ").first {
+                return dateString + " " + "(\(timezone))"
+            }
+            else {
+                return "Unknown Date"
+            }
+        }
+    }
+}
