@@ -47,6 +47,10 @@ struct AsyncImageView<ContentView: View>: View {
     }
 }
 
-#Preview {
+#Preview("Image") {
     AsyncImageView(url: "https://i.bytvi.com/domain_icons/dentonrc.jpg", placeholder: { Image(systemName: "bird")})
+}
+
+#Preview("Placeholder") {
+    AsyncImageView(url: "https://i.bytvi.com/domain_icons/dentonrc23.jpg", placeholder: { Image(systemName: "bird")})
 }

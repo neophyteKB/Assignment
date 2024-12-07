@@ -22,10 +22,26 @@ struct BookmarkButton: View {
     }
     
     private var bookmarkButton: some View {
+        ZStack(alignment: .topTrailing) {
+            bookmarkIcon
+            badgeView
+        }
+        .frame(width: 44.0, height: 44.0)
+    }
+    
+    private var bookmarkIcon: some View {
         Image(systemName: "bookmark.fill")
             .foregroundColor(.red)
             .padding()
-        .frame(width: 44.0, height: 44.0)
+    }
+    
+    private var badgeView: some View {
+        Text("\(bookmarkCount)")
+            .font(.caption2)
+            .foregroundColor(.white)
+            .frame(width: 20.0, height: 20.0)
+            .background(Circle().fill(Color.blue))
+            .padding([.top, .trailing], 8.0)
     }
 }
 

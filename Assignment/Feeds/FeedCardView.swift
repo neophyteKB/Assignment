@@ -13,6 +13,18 @@ struct FeedCardView: View {
     let description: String?
     let sourceUrl: String?
     
+    init(
+        icon: String? = nil,
+        title: String,
+        description: String? = nil,
+        sourceUrl: String? = nil
+    ) {
+        self.icon = icon
+        self.title = title
+        self.description = description
+        self.sourceUrl = sourceUrl
+    }
+    
     var body: some View {
         HStack(spacing: 8.0) {
             iconView
@@ -90,9 +102,17 @@ struct FeedCardView: View {
     }
 }
 
-#Preview("Feed Card") {
+#Preview("Feed Card + Icon") {
     FeedCardView(
         icon: "https://i.bytvi.com/domain_icons/dentonrc.jpg",
+        title: "Signing day momentum?",
+        description: "North Texas is headed into a key point in its efforts to build for the future with momentum on its side.",
+        sourceUrl: "https://dentonrc.com"
+    )
+}
+
+#Preview("Feed Card + Placeholder") {
+    FeedCardView(
         title: "Signing day momentum?",
         description: "North Texas is headed into a key point in its efforts to build for the future with momentum on its side.",
         sourceUrl: "https://dentonrc.com"
