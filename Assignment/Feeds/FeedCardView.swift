@@ -45,14 +45,12 @@ struct FeedCardView: View {
         }
     }
     
-    @ViewBuilder
     private var iconView: some View {
-        if let icon {
-            // TODO: Add async image loading code
-            placeholderIcon
-        } else {
-            placeholderIcon
-        }
+        asyncImageView
+            .frame(width: 60.0, height: 60.0)
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(8.0)
+            .shadow(radius: 1.0)
     }
     
     @ViewBuilder
@@ -72,14 +70,23 @@ struct FeedCardView: View {
         }
     }
     
+    @ViewBuilder
+    private var asyncImageView: some View {
+        if let icon {
+            AsyncImageView(
+                url: icon,
+                placeholder: { placeholderIcon }
+            )
+        } else {
+            placeholderIcon
+        }
+    }
+    
     private var placeholderIcon: some View {
         Image(systemName: "bird")
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: 30.0, height: 30.0)
-            .frame(width: 60.0, height: 60.0)
-            .background(Color.gray.opacity(0.2))
-            .cornerRadius(8.0)
     }
 }
 
