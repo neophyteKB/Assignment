@@ -21,6 +21,11 @@ struct NewsFeedView: View {
                             bookmarkCount: $viewModel.bookmarkCount
                         )
                     }
+                    ToolbarItem(placement: .topBarLeading) {
+                        CategoryButtonView(
+                            selectedCategories: $viewModel.categoryFilter
+                        )
+                    }
                 }
                 .onAppear {
                     self.viewModel.fetchBookmaks()

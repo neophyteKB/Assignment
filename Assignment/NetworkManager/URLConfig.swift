@@ -10,5 +10,5 @@ import Foundation
 public enum URLConfig {
     public static let baseURL: String = "https://newsdata.io/api/1/news"
     public static let apiKey: String = ""
-    public static let category: NewsCategory = .none
+    public static let categories: [NewsCategory] = .init()
 }

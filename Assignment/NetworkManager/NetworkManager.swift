@@ -14,9 +14,9 @@ final class NetworkManager {
         return decoder
     }()
     
-    func fetchArticles(query: String? = nil) async throws -> [Article] {
+    func fetchArticles(categories: [NewsCategory] = [], query: String? = nil) async throws -> [Article] {
         let urlProvider = URLProvider()
-        let url = try urlProvider.generateURL(search: query)
+        let url = try urlProvider.generateURL(categories: categories, search: query)
         print(url)
         let (data, response) = try await URLSession.shared.data(from: url)
         if (response as? HTTPURLResponse)?.statusCode != 200 {

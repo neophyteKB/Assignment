@@ -31,7 +31,7 @@ struct BookmarkButton: View {
     
     private var bookmarkIcon: some View {
         Image(systemName: "bookmark.fill")
-            .foregroundColor(.red)
+            .foregroundColor(.blue)
             .padding()
     }
     
@@ -40,7 +40,7 @@ struct BookmarkButton: View {
             .font(.caption2)
             .foregroundColor(.white)
             .frame(width: 20.0, height: 20.0)
-            .background(Circle().fill(Color.blue))
+            .background(Circle().fill(Color.red))
             .padding([.top, .trailing], 8.0)
     }
 }

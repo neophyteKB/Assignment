@@ -28,19 +28,3 @@ struct Article: Decodable, Sendable {
     let sourceIcon: String?
     let language: String
 }
-
-public enum NewsCategory: String, Codable, Sendable {
-    case none
-    case sports
-    case top
-    case business
-    case domestic
-    
-    var query: String {
-        rawValue
-    }
-    
-    var name: String {
-        rawValue.capitalized
-    }
-}
