@@ -7,15 +7,17 @@
 import SwiftUI
 
 struct BookmarksListView: View {
-    @ObservedObject var viewModel: NewsFeedViewModel
+    @StateObject var viewModel: BookmarksViewModel = .init()
 
     var body: some View {
         List(viewModel.bookmarks) { article in
             Text(article.title)
         }
         .navigationTitle("Bookmarks")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
     }
 }
-//#Preview {
-//    BookmarksView()
-//}
+#Preview {
+    BookmarksListView()
+}
