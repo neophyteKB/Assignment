@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ErrorView: View {
+    @Environment(\.dismiss) var dismiss
     
     let error: String
+    @Binding var tryAgain: Bool
     
     var body: some View {
         VStack {
@@ -20,10 +22,14 @@ struct ErrorView: View {
                 .fontWeight(.bold)
             Text(error)
                 .font(.body)
+            Button("Try again") {
+                tryAgain.toggle()
+                dismiss()
+            }
         }
     }
 }
 
 #Preview {
-    ErrorView(error: "Error occurred")
+    ErrorView(error: "Error occurred", tryAgain: .constant(false))
 }

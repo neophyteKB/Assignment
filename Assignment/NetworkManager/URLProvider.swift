@@ -29,7 +29,7 @@ public struct URLProvider {
         components?.queryItems = queryItems
         
         guard let url = components?.url else {
-            throw URLError(.badURL)
+            throw NetworkError.badUrl
         }
         return url
     }

@@ -16,6 +16,7 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
     @Published var hasError: Bool = false
     @Published var bookmarkCount: Int = 0
     @Published var categoryFilter: [NewsCategory] = []
+    @Published var tryAgain: Bool = false
     var error: String = ""
 
     private let apiManager: NetworkManager
@@ -38,8 +39,7 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
                 )
                 self.articles = articles
             } catch {
-                hasError = true
-                self.error = error.localizedDescription
+                self.handle(error: error)
             }
             self.showLoader = false
         }
@@ -57,6 +57,16 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
             .dropFirst()
             .sink { [weak self] _ in
                 self?.fetchArticles()
+            }
+            .store(in: &cancellables)
+        
+        $tryAgain
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] tryAgain in
+                if tryAgain {
+                    self?.showLoader = true
+                    self?.fetchArticles()
+                }
             }
             .store(in: &cancellables)
     }
@@ -84,5 +94,17 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
     
     private func index(of id: String) -> Int? {
         bookmarkIds.firstIndex(where: { articleId in articleId == id })
+    }
+    
+    private func handle(error: Error) {
+        var errorString: String {
+            if let networkError = error as? NetworkError {
+                return networkError.message
+            } else {
+                return error.localizedDescription
+            }
+        }
+        self.error = errorString
+        hasError = true
     }
 }
