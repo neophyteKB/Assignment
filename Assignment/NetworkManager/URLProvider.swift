@@ -37,4 +37,4 @@ public struct URLProvider {
 
 // API Key
 // TODO: Move api_key to secrets
-private let apiKey = "pub_61210a2d792dd97341143f956e5a0fd4adc"
+private let apiKey = "pub_61210a2d792dd97341143f956e5a0fd4adc3e"
