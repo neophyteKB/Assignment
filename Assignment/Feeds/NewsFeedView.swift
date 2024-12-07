@@ -39,22 +39,50 @@ struct NewsFeedView: View {
     
     private var feedsView: some View {
         List(viewModel.articles, id: \.articleId) { article in
-            FeedCardView(
-                icon: article.sourceIcon,
-                title: article.title,
-                description: article.description,
-                sourceUrl: article.sourceUrl
-            )
-            .swipeActions(edge: .trailing) {
-                Button(
-                    action: { self.onBookmarkTap(article: article) },
-                    label: { self.bookmarkIcon(id: article.articleId)
-                    }
-                )
+            NavigationLink {
+                destination(article: article)
+            } label: {
+                cardView(article: article)
             }
         }
         .listStyle(.plain)
         .searchable(text: $viewModel.searchText, prompt: "Search...")
+        .fullScreenCover(isPresented: self.$viewModel.hasError) {
+            ErrorView(error: self.viewModel.error)
+        }
+    }
+    
+    private func cardView(article: Article) -> some View {
+        FeedCardView(
+            icon: article.sourceIcon,
+            title: article.title,
+            description: article.description,
+            sourceUrl: article.sourceUrl
+        )
+        .swipeActions(edge: .trailing) {
+            Button(
+                action: { self.onBookmarkTap(article: article) },
+                label: { self.bookmarkIcon(id: article.articleId)
+                }
+            )
+        }
+    }
+    
+    private func destination(article: Article) -> some View {
+        DetailsView(
+            viewModel: .init(
+                title: article.title,
+                content: article.content,
+                desc: article.description,
+                link: article.link,
+                source: .init(
+                    name: article.sourceName,
+                    icon: article.sourceIcon,
+                    url: article.sourceUrl
+                ),
+                dateString: article.pubDate.dateString(for: article.pubDateTZ)
+            )
+        )
     }
                        
     private func bookmarkIcon(id: String) -> some View {
