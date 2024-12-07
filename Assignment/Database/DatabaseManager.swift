@@ -7,6 +7,26 @@
 import Foundation
 import SwiftData
 
+@propertyWrapper
+struct DatabaseAssistant {
+    private var manager: DatabaseManager?
+
+    var wrappedValue: DatabaseManager {
+        get {
+            if let manager {
+                return manager
+            }
+            guard let context = try? ModelContext.init(.init(for: Bookmark.self)) else {
+                fatalError("Failed to initialize ModelContext")
+            }
+            return DatabaseManager(context: context)
+        }
+        set {
+            manager = newValue
+        }
+    }
+}
+
 final class DatabaseManager {
     private let context: ModelContext
 
@@ -14,36 +34,37 @@ final class DatabaseManager {
         self.context = context
     }
 
-    func saveBookmark(_ bookmark: Bookmark) throws {
-        // TODO: Facing issues, has to check this again.
-//        do {
-//            try context.insert(bookmark)
-//            try context.save()
-//        } catch {
-//            print("Error saving bookmark: \(error)")
-//        }
+    func saveBookmark(bookmark: Bookmark) throws {
+        do {
+            context.insert(bookmark)
+            try context.save()
+        } catch {
+            print("Error saving bookmark: \(error)")
+        }
     }
 
-    func removeBookmark(_ bookmark: Bookmark) throws {
-        // TODO: Facing issues, has to check this again.
-//        do {
-//            if let existing = try context.fetch(Bookmark.self, where: { $0.id == bookmark.id }).first {
-//                try context.delete(existing)
-//                try context.save()
-//            }
-//        } catch {
-//            print("Error removing bookmark: \(error)")
-//        }
+    func removeBookmark(bookmarkId: String) throws {
+        let fetchDescriptor = FetchDescriptor<Bookmark>(
+            predicate: #Predicate { $0.id == bookmarkId }
+        )
+        do {
+            if let existing = try context.fetch(fetchDescriptor).first {
+                context.delete(existing)
+                try context.save()
+            }
+        } catch {
+            print("Error removing bookmark: \(error)")
+        }
     }
 
     func fetchBookmarks() throws -> [Bookmark] {
-        // TODO: Facing issues, has to check this again.
-//        do {
-//            try context.fetch(Bookmark.self)
-//        } catch {
-//            print("Error fetching bookmarks: \(error)")
+        do {
+            let bookmarks = try context.fetch( FetchDescriptor<Bookmark>())
+            return bookmarks
+        } catch {
+            print("Error fetching bookmarks: \(error)")
             return []
-//        }
+        }
     }
 }
 

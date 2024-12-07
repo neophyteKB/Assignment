@@ -19,6 +19,7 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
 
     private let apiManager: NetworkManager
     private var bookmarkIds: [String] = .init()
+    @DatabaseAssistant private var databaseManager: DatabaseManager
 
     init(apiManager: NetworkManager = NetworkManager()) {
         self.showLoader = true
@@ -39,19 +40,28 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
         }
     }
     
+    func fetchBookmaks() {
+        guard let bookmarks = try? self.databaseManager.fetchBookmarks() else { return }
+        self.bookmarkIds = bookmarks.map { $0.id }
+        self.bookmarkCount = bookmarkIds.count
+    }
+    
     func isBookmarked(for articleId: String) -> Bool {
-        bookmarkIds.contains(where: { $0 == articleId })
+        index(of: articleId) != nil
     }
 
     func toggleBookmark(article: Article)  {
-        print(article.articleId)
-        bookmarkIds.append(article.articleId)
-        self.bookmarkCount = bookmarkIds.count
-        // TODO: - Add logic to set bookmark
-//        if let index = bookmarks.firstIndex(where: { $0.id == article.id }) {
-//            bookmarks.remove(at: index)
-//        } else {
-//            bookmarks.append(article)
-//        }
+        if let index = index(of: article.articleId) {
+            self.bookmarkIds.remove(at: index)
+            try? self.databaseManager.removeBookmark(bookmarkId: article.articleId)
+        } else {
+            self.bookmarkIds.append(article.articleId)
+            try? self.databaseManager.saveBookmark(bookmark: Bookmark(article: article))
+        }
+        bookmarkCount = bookmarkIds.count
+    }
+    
+    private func index(of id: String) -> Int? {
+        bookmarkIds.firstIndex(where: { articleId in articleId == id })
     }
 }

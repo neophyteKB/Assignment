@@ -22,6 +22,9 @@ struct NewsFeedView: View {
                         )
                     }
                 }
+                .onAppear {
+                    self.viewModel.fetchBookmaks()
+                }
         }
         .showLoader($viewModel.showLoader)
         .task {

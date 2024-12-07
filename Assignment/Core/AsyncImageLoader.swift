@@ -33,6 +33,8 @@ class AsyncImageLoader: ObservableObject {
                 let image = Image(uiImage: downloadedImage)
                 self.state = .loaded(image)
                 await cache.insert(image, for: url)
+            } else {
+                self.state = .failed
             }
         } catch {
             self.state = .failed
