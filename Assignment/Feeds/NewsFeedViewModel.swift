@@ -13,9 +13,9 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
     @Published var articles: [Article] = []
     @Published var searchText: String = ""
     @Published var showLoader: Bool = false
-    @Published var selectedCategory: NewsCategory = .none
     @Published var hasError: Bool = false
     @Published var bookmarkCount: Int = 0
+    @Published var categoryFilter: [NewsCategory] = []
     var error: Error? = nil
 
     private let apiManager: NetworkManager
@@ -29,10 +29,13 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
         self.setupObservers()
     }
 
-    func fetchArticles(query: String? = nil) {
+    func fetchArticles() {
         Task {
             do {
-                let articles = try await apiManager.fetchArticles(query: query)
+                let articles = try await apiManager.fetchArticles(
+                    categories: categoryFilter,
+                    query: searchText
+                )
                 self.articles = articles
             } catch {
                 hasError = true
@@ -41,13 +44,17 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
             self.showLoader = false
         }
     }
-    
     private func setupObservers() {
         $searchText
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
-            .sink { [weak self] searchText in
-                print(searchText)
-                self?.fetchArticles(query: searchText)
+            .sink { [weak self] _ in
+                self?.fetchArticles()
+            }
+            .store(in: &cancellables)
+        
+        $categoryFilter
+            .sink { [weak self] _ in
+                self?.fetchArticles()
             }
             .store(in: &cancellables)
     }
