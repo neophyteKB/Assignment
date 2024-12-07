@@ -5,12 +5,13 @@
 //  Created by Kamal Kishor on 02/12/24.
 //
 
+import Combine
 import Foundation
 
 @MainActor
 final class NewsFeedViewModel: ObservableObject, Sendable {
     @Published var articles: [Article] = []
-    @Published var bookmarks: [Bookmark] = []
+    @Published var searchText: String = ""
     @Published var showLoader: Bool = false
     @Published var selectedCategory: NewsCategory = .none
     @Published var hasError: Bool = false
@@ -19,18 +20,19 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
 
     private let apiManager: NetworkManager
     private var bookmarkIds: [String] = .init()
+    private var cancellables: Set<AnyCancellable> = .init()
     @DatabaseAssistant private var databaseManager: DatabaseManager
 
     init(apiManager: NetworkManager = NetworkManager()) {
         self.showLoader = true
         self.apiManager = apiManager
-        self.fetchArticles()
+        self.setupObservers()
     }
 
-    func fetchArticles() {
+    func fetchArticles(query: String? = nil) {
         Task {
             do {
-                let articles = try await apiManager.fetchArticles()
+                let articles = try await apiManager.fetchArticles(query: query)
                 self.articles = articles
             } catch {
                 hasError = true
@@ -38,6 +40,16 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
             }
             self.showLoader = false
         }
+    }
+    
+    private func setupObservers() {
+        $searchText
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .sink { [weak self] searchText in
+                print(searchText)
+                self?.fetchArticles(query: searchText)
+            }
+            .store(in: &cancellables)
     }
     
     func fetchBookmaks() {

@@ -49,6 +49,7 @@ struct NewsFeedView: View {
             }
         }
         .listStyle(.plain)
+        .searchable(text: $viewModel.searchText, prompt: "Search...")
     }
                        
     private func bookmarkIcon(id: String) -> some View {
