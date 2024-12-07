@@ -35,6 +35,12 @@ struct NewsFeedView: View {
         .task {
             viewModel.fetchArticles()
         }
+        .fullScreenCover(isPresented: self.$viewModel.hasError) {
+            ErrorView(
+                error: self.viewModel.error,
+                tryAgain: self.$viewModel.tryAgain
+            )
+        }
     }
     
     private var feedsView: some View {
@@ -47,9 +53,6 @@ struct NewsFeedView: View {
         }
         .listStyle(.plain)
         .searchable(text: $viewModel.searchText, prompt: "Search...")
-        .fullScreenCover(isPresented: self.$viewModel.hasError) {
-            ErrorView(error: self.viewModel.error)
-        }
     }
     
     private func cardView(article: Article) -> some View {

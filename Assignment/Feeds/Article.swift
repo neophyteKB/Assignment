@@ -9,7 +9,23 @@ import Foundation
 
 struct FeedResponse: Decodable, Sendable {
     let status: String
-    let results: [Article]
+    let results: ResultsType
+}
+
+enum ResultsType: Decodable {
+    case array([Article])
+    case dictionary([String: String])
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let array = try? container.decode([Article].self) {
+            self = .array(array)
+        } else if let dictionary = try? container.decode([String: String].self) {
+            self = .dictionary(dictionary)
+        } else {
+            throw NetworkError.dataCorruptedError
+        }
+    }
 }
 
 struct Article: Decodable, Sendable {
