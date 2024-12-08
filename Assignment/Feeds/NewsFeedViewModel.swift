@@ -24,39 +24,42 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
     private var cancellables: Set<AnyCancellable> = .init()
     @DatabaseAssistant private var databaseManager: DatabaseManager
 
-    init(apiManager: NetworkManager = NetworkManager()) {
+    init(apiManager: NetworkManager = NetworkManagerImp()) {
         self.showLoader = true
         self.apiManager = apiManager
         self.setupObservers()
     }
 
-    func fetchArticles() {
-        Task {
-            do {
-                let articles = try await apiManager.fetchArticles(
-                    categories: categoryFilter,
-                    query: searchText
-                )
-                self.articles = articles
-            } catch {
-                self.handle(error: error)
-            }
-            self.showLoader = false
+    func fetchArticles() async {
+        do {
+            let articles = try await apiManager.fetchArticles(
+                categories: categoryFilter,
+                query: searchText
+            )
+            self.articles = articles
+        } catch {
+            self.handle(error: error)
         }
+        self.showLoader = false
     }
+    
     private func setupObservers() {
         $searchText
             .dropFirst()
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
             .sink { [weak self] _ in
-                self?.fetchArticles()
+                Task {
+                    await self?.fetchArticles()
+                }
             }
             .store(in: &cancellables)
         
         $categoryFilter
             .dropFirst()
             .sink { [weak self] _ in
-                self?.fetchArticles()
+                Task {
+                    await self?.fetchArticles()
+                }
             }
             .store(in: &cancellables)
         
@@ -65,7 +68,9 @@ final class NewsFeedViewModel: ObservableObject, Sendable {
             .sink { [weak self] tryAgain in
                 if tryAgain {
                     self?.showLoader = true
-                    self?.fetchArticles()
+                    Task {
+                        await self?.fetchArticles()
+                    }
                 }
             }
             .store(in: &cancellables)

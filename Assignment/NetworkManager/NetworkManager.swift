@@ -6,7 +6,11 @@
 //
 import Foundation
 
-final class NetworkManager {
+protocol NetworkManager {
+    func fetchArticles(categories: [NewsCategory], query: String?) async throws -> [Article]
+}
+
+final class NetworkManagerImp: NetworkManager {
     
     private let jsonDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -14,7 +18,7 @@ final class NetworkManager {
         return decoder
     }()
     
-    func fetchArticles(categories: [NewsCategory] = [], query: String? = nil) async throws -> [Article] {
+    func fetchArticles(categories: [NewsCategory], query: String?) async throws -> [Article] {
         let urlProvider = URLProvider()
         let url = try urlProvider.generateURL(categories: categories, search: query)
         let (data, response) = try await URLSession.shared.data(from: url)

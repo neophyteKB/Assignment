@@ -29,6 +29,25 @@
 		8EE1D27C2CFE191200F0AA77 /* AssignmentUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AssignmentUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8E4364402D06035C002D2F86 /* Exceptions for "AssignmentTests" folder in "Assignment" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				FeedsJson.json,
+				JsonParser.swift,
+			);
+			target = 8EE1D2612CFE191000F0AA77 /* Assignment */;
+		};
+		8E4364412D06035C002D2F86 /* Exceptions for "AssignmentTests" folder in "AssignmentTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				FeedsJson.json,
+				JsonParser.swift,
+			);
+			target = 8EE1D2712CFE191200F0AA77 /* AssignmentTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8EE1D2642CFE191000F0AA77 /* Assignment */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -37,6 +56,10 @@
 		};
 		8EE1D2752CFE191200F0AA77 /* AssignmentTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8E4364402D06035C002D2F86 /* Exceptions for "AssignmentTests" folder in "Assignment" target */,
+				8E4364412D06035C002D2F86 /* Exceptions for "AssignmentTests" folder in "AssignmentTests" target */,
+			);
 			path = AssignmentTests;
 			sourceTree = "<group>";
 		};
