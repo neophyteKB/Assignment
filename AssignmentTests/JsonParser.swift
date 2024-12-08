@@ -13,11 +13,14 @@ struct JsonParser {
             return []
         }
         do {
-            let data = try JSONSerialization.data(withJSONObject: file, options: .prettyPrinted)
+            let data = try Data(contentsOf: URL(filePath: file), options: .mappedIfSafe)
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let feeds = try decoder.decode([Article].self, from: data)
-            return feeds
+            let response = try decoder.decode(FeedResponse.self, from: data)
+            if case .array(let feeds) = response.results {
+                return feeds
+            }
+            return []
         } catch {
             return []
         }

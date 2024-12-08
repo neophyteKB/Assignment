@@ -33,7 +33,7 @@ struct NewsFeedView: View {
         }
         .showLoader($viewModel.showLoader)
         .task {
-            viewModel.fetchArticles()
+            await self.viewModel.fetchArticles()
         }
         .fullScreenCover(isPresented: self.$viewModel.hasError) {
             ErrorView(
